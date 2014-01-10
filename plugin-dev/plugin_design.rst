@@ -1,8 +1,10 @@
 Plugin Design
 ====================
 
-Managing the Plugin Lifecycle
---------------------------------
+.. toctree::
+   :maxdepth: 2
+
+   design/lifecycle.rst
 
 Adding Plugin Controllers
 --------------------------
