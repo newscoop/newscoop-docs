@@ -3,9 +3,11 @@ Managing the Plugin Lifecycle
 
 The best way for plugin lifecycle management is registering event subscriber. Events lifecycle consists of 3 events:
 
-  - plugin.install
-  - plugin.remove
-  - plugin update
+  - plugin.install_vendor_plugin_name
+  - plugin.remove_vendor_plugin_name
+  - plugin update_vendor_plugin_name
+  
+```vendor_plugin_name``` is builded from composer name property (vendor/plugin-name). We replace "/" and "-" to "_".
 
 This is example of simple event subscriber class:
 
