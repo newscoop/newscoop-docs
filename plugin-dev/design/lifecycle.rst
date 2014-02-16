@@ -7,7 +7,7 @@ The best way for plugin lifecycle management is registering event subscriber. Ev
   - plugin.remove_vendor_plugin_name
   - plugin update_vendor_plugin_name
   
-```vendor_plugin_name``` is builded from composer name property (vendor/plugin-name). We replace "/" and "-" to "_".
+``vendor_plugin_name`` is builded from composer name property (vendor/plugin-name). We replace "/" and "-" to "_".
 
 This is example of simple event subscriber class:
 
