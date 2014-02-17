@@ -8,16 +8,18 @@ Managing the Plugin Lifecycle
 
 To manage the plugin from installation to removal, register the following event subscribers: 
 
-  - plugin.install
-  - plugin.remove
-  - plugin.update
+  - plugin.install_vendor_plugin_name
+  - plugin.remove_vendor_plugin_name
+  - plugin update_vendor_plugin_name
+
+``vendor_plugin_name`` is the composer name property (vendor/plugin-name) with slashes `/` and hyphens `-` converted to underscores `_`.
 
 This is an example of an event subscriber class containing placeholder functions for the three events:
 
 .. code-block:: php
 
-    <?php
     // ExamplePluginBundle/EventListener/LifecycleSubscriber.php
+    <?php
     namespace Newscoop\ExamplePluginBundle\EventListener;
 
     use Symfony\Component\EventDispatcher\EventSubscriberInterface;
