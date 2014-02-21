@@ -240,3 +240,31 @@ We are almost done! Now we need register in Newscoop our list and new object. Fo
             ));
         }
     }
+
+Now we need register listener in newscoop.
+
+.. code-block:: yaml
+
+    # Resources/config/services.yml
+    newscoop_example_plugin.list_objects.listener:
+        class: Newscoop\ExamplePluginBundle\EventListener\ListObjectsListener
+        tags:
+          - { name: kernel.event_listener, event: newscoop.listobjects.register, method: registerObjects }    
+
+
+How to use it in template:
+
+.. code-block:: smarty
+
+    <ul>
+    {{ list_example_content length="2" }}
+        <li>
+        {{ $gimme->content->getName() }}
+        </li>
+
+    {{if $gimme->current_list->at_end}}
+    </ul>
+    {{ /if }}
+
+        {{ listpagination }}
+    {{ /list_example_content }}
