@@ -10,10 +10,10 @@ Newscoop plugins add extra functionality to Newscoop open source CMS for News. T
 
 Plugins let you change Newscoop behavior:
 
-* Define routes for controllera and views
-* Add hooks in the Admin and Edit panels
-* Manage your database
-* Translate plugins
+* Define routes for controllers and views
+* Add new controllers and views
+* Add hooks in the Admin panel pages
+* Work with instance database
 * Add Smarty template blocks and functions
 
 Find a complete list of available plugins in the `Official Plugin Repository <https://github.com/newscoop>`_.

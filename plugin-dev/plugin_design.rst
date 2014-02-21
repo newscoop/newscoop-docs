@@ -6,8 +6,7 @@ Plugin Design
 
    design/lifecycle.rst
 
-Adding Plugin Controllers
---------------------------
+   design/controllers.rst
 
 Creating Database Entities
 ---------------------------
