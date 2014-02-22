@@ -11,6 +11,8 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   custom_template_lists.rst
+
 
 
 Indices and tables

@@ -97,8 +97,7 @@ and use it in your service subscriber:
 ..  In subscriber included in this plugin you can find example of database updating (based on doctrine entities and schema tool)
 
 
-Adding Plugin Controllers
---------------------------
+   design/controllers.rst
 
 The Newscoop plugins system is based on the Symfony Bundles system, so almost all Symfony features are available. To create a new controller and route, start by creating the controller class:
 
