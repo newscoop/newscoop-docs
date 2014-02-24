@@ -155,13 +155,15 @@ Next file on our todo list is ``block.list_example_content.php``. Block provides
         $context = $smarty->getTemplateVars('gimme');
         // get paginator service
         $paginatorService = \Zend_Registry::get('container')->get('newscoop.listpaginator.service');
+        $cacheService = \Zend_Registry::get('container')->get('newscoop.cache');
 
         if (!isset($content)) { // init
             $start = $context->next_list_start('\Newscoop\ExamplePluginBundle\TemplateList\ExampleContentList');
             // initiate list object, pass new criteria object and paginatorService
             $list = new \Newscoop\ExamplePluginBundle\TemplateList\ExampleContentList(
                 new \Newscoop\ExamplePluginBundle\TemplateList\ExampleContentCriteria(),
-                $paginatorService
+                $paginatorService,
+                $cacheService
             );
 
             // inject page parameter name to paginatorService, every list have own name used for pagination
