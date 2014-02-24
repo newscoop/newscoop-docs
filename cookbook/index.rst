@@ -12,6 +12,7 @@ Contents:
    :maxdepth: 2
 
    custom_template_lists.rst
+   data_caching.rst
 
 
 
