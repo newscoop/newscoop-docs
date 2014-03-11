@@ -1,4 +1,4 @@
-Creating Custom Lists for Newcoop Templates
+Creating Custom Lists for Newscoop Templates
 --------------------------------------------
 
 In Newscoop templates you can use Smarty3 lists to display Newscoop content:
