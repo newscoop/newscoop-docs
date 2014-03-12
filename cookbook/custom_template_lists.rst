@@ -1,7 +1,7 @@
 Creating Custom Lists for Newscoop Templates
 --------------------------------------------
 
-In Newscoop templates you can use Smarty3 lists to display Newscoop content:
+In Newscoop templates you can use Smarty3 plugin blocks to display Newscoop content as a list:
 
 .. code:: 
 
