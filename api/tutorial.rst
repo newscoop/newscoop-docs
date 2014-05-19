@@ -70,11 +70,9 @@ To authenticate your client web application:
                
                 For example: `NzRlY2E2ODY4MTNhNWVhOTdkMjU2NzgxMWQxOGQ0NzIyYzZmMDYxZGFhYTEwNTkyNWJlNTlmNzg3ZGY4MzAzNA`.
 
-.. FIXME These last two neex explaining.
-
    A full response looks like this::
 
-       http://www.example.org/
+       http://myapp.example.com/
        #access_token=N2M4OTgxMTM2YWJiMzZmZWNkYTJkZDZlZmY2ZTBiNmUyOTMyZWNlMzNjNDM3NjMzMmU3MWI2OGI4MGM0ODhjNg
        &expires_in=2592000
        &token_type=bearer
@@ -83,8 +81,8 @@ To authenticate your client web application:
 
    If there is an error in authentication, or the URI does not match the URI configured in the Newscoop Admin Interface, the response includes an error code instead::
 
-                http://www.example.org/cb
-                #error=access_denied
+       http://myapp.example.com/
+       #error=access_denied
 
 3. Make sure any further requests, including the ones in the :ref:`getting_a_list` section, include the `access_token` parameter returned in the previous step.
 
@@ -154,4 +152,4 @@ To get a list of Articles for a particular topic you need to make two requests, 
 
          ...
 
-   A full list of the response json fields is in the `API reference <http://newscoop.aes.sourcefabric.net/documentation/rest-api/#get--content-api-comments-article-{number}-{language}-{order}-recommended.{_format}>`_.
+   A full list of fields in the json response is in the `API reference <http://newscoop.aes.sourcefabric.net/documentation/rest-api/#get--content-api-comments-article-{number}-{language}-{order}-recommended.{_format}>`_.
