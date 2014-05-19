@@ -111,14 +111,14 @@ To get a list of Articles for a particular topic you need to make two requests, 
             } 
           ], 
           "pagination" :  { 
-            "itemsPerPage" :  3 , 
+            "itemsPerPage" :  10 ,
             "currentPage" :  1 , 
             "itemsCount" :  771 , 
-            "nextPageLink" :  "http://newscoop.aes.sourcefabric.net/content-api/topics?page=2&items_per_page=10" 
+            "nextPageLink" :  "http://newscoop.aes.sourcefabric.net/content-api/topics?access_token=N2M4OTgxMTM2YWJiMzZmZWNkYTJkZDZlZmY2ZTBiNmUyOTMyZWNlMzNjNDM3NjMzMmU3MWI2OGI4MGM0ODhjNg&page=2&items_per_page=10" 
           } 
         }
 
-   Note the pagination link at the bottom of the json items array. To look at the second page of results, add your authentication token to that URL and make another GET request.
+   Note the pagination link at the bottom of the json items array, containg the parameters ``page`` and ``items_per_page``. The ``nextPageLink`` is generated for each request, or you can add the parameters yourself to a request.
 
 2. To get a list of topics about Thomas de Courten, for example, make a note of the relevant id and make a GET request to ``/rest-api/topics/{id}/{language}/articles``, replacing ``{id}`` with ``394`` and ``{language}`` with ``de``. 
 
