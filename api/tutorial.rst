@@ -1,13 +1,6 @@
 Tutorial
 ==============================
 
-.. These do not work in code blocks, and so are fairly pointless.
-
-.. |url| replace:: `http://newscoop.aes.sourcefabric.net`
-.. |app| replace:: `http%3A%2F%2Fpeter.sourcefabric.net%2F`
-.. |token| replace:: `2M4OTgxMTM2YWJiMzZmZWNkYTJkZDZlZmY2ZTBiNmUyOTMyZWNlMzNjNDM3NjMzMmU3MWI2OGI4MGM0ODhjNg`
-
-
 This tutorial shows you how to authenticate a client web application with Newscoop, and how to extract a list of articles for a particular topic. It assumes you have a working Newscoop installation, you know the URI of your client web application and you have a valid Newcoop user account.
 
 .. What permissions does the Newscoop User need?
@@ -25,7 +18,7 @@ Before your client web application can use the Newscoop RESTful API, you need to
 * The Newcoop Publication you are accessing.
 * The URI of your client web application which parses the authentication token sent by Newscoop.
 
-After adding the client application, make a note of the `Client id` displayed in the table, you need it to authenticate.
+After adding the client application, make a note of the "Client id" displayed in the table, you need it to authenticate.
 
 .. _authentication:
 
@@ -34,16 +27,16 @@ Authentication for web applications
 
 To authenticate your client web application:
 
-1. Make a GET request to `/oauth/v2/auth` using the following parameters:
+1. Make a GET request to ``/oauth/v2/auth`` using the following parameters:
 
-        `client_id`
-                YOUR ID, for example `9_1irxa0qcy3ms48c8c8wsgcgsc04k0s0w0g0sg4cco4kocoowoo`
+        ``client_id``
+                YOUR ID, for example ``9_1irxa0qcy3ms48c8c8wsgcgsc04k0s0w0g0sg4cco4kocoowoo``
 
-        `redirect_uri`
-                YOUR URI, for example `http://myapp.example.com/`. This must match the URI you added in the Newscoop Admin Interface above. Remember to encode the URI. 
+        ``redirect_uri``
+                YOUR URI, for example ``http://myapp.example.com/``. This must match the URI you added in the Newscoop Admin Interface above. Remember to encode the URI. 
 
-        `response_type`
-                `token`
+        ``response_type``
+                ``token``
 
    A full request looks like this::
 
@@ -52,23 +45,23 @@ To authenticate your client web application:
        &redirect_uri=http%3A%2F%2Fmyapp.example.com%2F
        &response_type=token
 
-2. Log in to the Newscoop window you are redirected to, and click the `Allow Access` button to authenticate your client web application for one hour. You are redirected to the URI you specified in the request, with the following extra parameters:
+2. Log in to the Newscoop window you are redirected to, and click the "Allow Access" button to authenticate your client web application for one hour. You are redirected to the URI you specified in the request, with the following extra parameters:
 
-        `access_token`
+        ``access_token``
                 The authentication token to use in your client application requests. 
 
-                For example: `N2M4OTgxMTM2YWJiMzZmZWNkYTJkZDZlZmY2ZTBiNmUyOTMyZWNlMzNjNDM3NjMzMmU3MWI2OGI4MGM0ODhjNg`.
+                For example: ``N2M4OTgxMTM2YWJiMzZmZWNkYTJkZDZlZmY2ZTBiNmUyOTMyZWNlMzNjNDM3NjMzMmU3MWI2OGI4MGM0ODhjNg``.
 
-        `expires_in`
-                Number of seconds before the authentication token expires. After that you need to request a new one, or refresh the old one. Example `2592000`.
+        ```expires_in``
+                Number of seconds before the authentication token expires. After that you need to request a new one, or refresh the old one. Example ``2592000``.
 
-        `token_type`
-                Token type according to the `OAUTH 2.0 Authorization Framework <http://tools.ietf.org/html/rfc6749#section-7.1>`_. `bearer`
+        ``token_type``
+                Token type according to the `OAUTH 2.0 Authorization Framework <http://tools.ietf.org/html/rfc6749#section-7.1>`_. Must be the string ``bearer``.
 
-        `refresh_token`
+        ``refresh_token``
                 Extend the validity of your authentication token for another hour `by refreshing <http://tools.ietf.org/html/rfc6749#page-47>`_. 
                
-                For example: `NzRlY2E2ODY4MTNhNWVhOTdkMjU2NzgxMWQxOGQ0NzIyYzZmMDYxZGFhYTEwNTkyNWJlNTlmNzg3ZGY4MzAzNA`.
+                For example: ``NzRlY2E2ODY4MTNhNWVhOTdkMjU2NzgxMWQxOGQ0NzIyYzZmMDYxZGFhYTEwNTkyNWJlNTlmNzg3ZGY4MzAzNA``.
 
    A full response looks like this::
 
@@ -84,7 +77,7 @@ To authenticate your client web application:
        http://myapp.example.com/
        #error=access_denied
 
-3. Make sure any further requests, including the ones in the :ref:`getting_a_list` section, include the `access_token` parameter returned in the previous step.
+3. Make sure any further requests, including the ones in the :ref:`getting_a_list` section, include the ``access_token`` parameter returned in the previous step.
 
 .. _getting_a_list:
 
@@ -93,7 +86,7 @@ Getting a list of Articles
 
 To get a list of Articles for a particular topic you need to make two requests, one to list the topics, and another to get the articles for a particular topic:
 
-1. Make a GET request to `/rest-api/topics` using the authentication token from :ref:`authentication`.
+1. Make a GET request to ``/rest-api/topics`` using the authentication token from :ref:`authentication`.
 
    The request looks like this::
        
@@ -127,7 +120,7 @@ To get a list of Articles for a particular topic you need to make two requests, 
 
    Note the pagination link at the bottom of the json items array. To look at the second page of results, add your authentication token to that URL and make another GET request.
 
-2. To get a list of topics about Thomas de Courten, for example, make a note of the relevant `id` and make a GET request to `/rest-api/topics/{id}/{language}/articles`, replacing `{id}` with `394` and `{language}` with `de`. 
+2. To get a list of topics about Thomas de Courten, for example, make a note of the relevant id and make a GET request to ``/rest-api/topics/{id}/{language}/articles``, replacing ``{id}`` with ``394`` and ``{language}`` with ``de``. 
 
    .. note:: Currently you need to know the language code of the topic to make the request. You can see what language a topic is written in in the Newscoop Admin Interface.
 
