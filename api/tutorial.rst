@@ -1,4 +1,4 @@
-Getting Started with the Newscoop RESTful Tutorial
+Getting Started with the Newscoop RESTful API
 ===================================================
 
 This tutorial shows you how to authenticate a client web application with Newscoop, and how to extract a list of articles for a particular topic. It assumes you have a working Newscoop installation, you know the URI of your client web application and you have a valid Newcoop user account.
