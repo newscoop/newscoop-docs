@@ -1,5 +1,5 @@
-Tutorial
-==============================
+Getting Started with the Newscoop RESTful Tutorial
+===================================================
 
 This tutorial shows you how to authenticate a client web application with Newscoop, and how to extract a list of articles for a particular topic. It assumes you have a working Newscoop installation, you know the URI of your client web application and you have a valid Newcoop user account.
 
@@ -30,10 +30,10 @@ To authenticate your client web application:
 1. Make a GET request to ``/oauth/v2/auth`` using the following parameters:
 
         ``client_id``
-                YOUR ID, for example ``9_1irxa0qcy3ms48c8c8wsgcgsc04k0s0w0g0sg4cco4kocoowoo``
+                Your client id, for example ``9_1irxa0qcy3ms48c8c8wsgcgsc04k0s0w0g0sg4cco4kocoowoo``
 
         ``redirect_uri``
-                YOUR URI, for example ``http://myapp.example.com/``. This must match the URI you added in the Newscoop Admin Interface above. Remember to encode the URI. 
+                The uri of your client web application, for example ``http://myapp.example.com/``. This must match the URI you added in the Newscoop Admin Interface above. Remember to encode the URI. 
 
         ``response_type``
                 ``token``
@@ -146,3 +146,36 @@ To get a list of Articles for a particular topic you need to make two requests, 
          ...
 
    A full list of fields in the json response is in the `API reference <http://newscoop.aes.sourcefabric.net/documentation/rest-api/#get--content-api-comments-article-{number}-{language}-{order}-recommended.{_format}>`_.
+
+3. To get the comments for each article, make a GET request *for each article* to ``/rest-api/comments/article/{number}/{language}/nested``, replacing ``{number}`` with the article number and ``{language}`` with the article language code. As usual, add the authentication parameters ``&access_token``. A full request looks like this::
+
+    http://newscoop.aes.sourcefabric.net/content-api/comments/article/3/de/nested
+    ?access_token=N2M4OTgxMTM2YWJiMzZmZWNkYTJkZDZlZmY2ZTBiNmUyOTMyZWNlMzNjNDM3NjMzMmU3MWI2OGI4MGM0ODhjNg
+
+   And an extract of the response::
+
+    {
+       "items":[
+           {
+               "author":"Manuel Egli",
+               "id":4590,
+               "commenter":{
+                   "image":"newscoop.aes.sourcefabric.net\/images\/user_placeholder_2.png",
+                   "id":187,
+                   "name":"Manuel Egli",
+                   "email":"manuel.egli@gmx.ch",
+                   "url":"",
+                   "ip":"10.30.27.5",
+                   "created":"2012-02-23T10:41:21+0000",
+                   "updated":"-0001-11-30T00:00:00+0000"
+               },
+               "subject":"Tolle Presseschau!",
+               "message":"Vielen Dank f\u00fcr die tolle Presseschau \u00fcber den FCB-FCB Match von gestern. Generell finde ich, dass die TagesWoche sehr gute und interessante Presseschauen macht und zudem auch Tweets und Posts einbindet. Weiter so!",
+               "thread_level":0,
+               "thread_order":1,
+               "status":"approved",
+               "created":"2012-02-23T10:41:21+0000",
+               "updated":"-0001-11-30T00:00:00+0000",
+               "recommended":1
+           },
+        {
