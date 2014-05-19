@@ -1,12 +1,16 @@
 Tutorial
 ==============================
 
+.. These do not work in code blocks, and so are fairly pointless.
+
 .. |url| replace:: `http://newscoop.aes.sourcefabric.net`
 .. |app| replace:: `http%3A%2F%2Fpeter.sourcefabric.net%2F`
 .. |token| replace:: `2M4OTgxMTM2YWJiMzZmZWNkYTJkZDZlZmY2ZTBiNmUyOTMyZWNlMzNjNDM3NjMzMmU3MWI2OGI4MGM0ODhjNg`
 
 
-This tutorial shows you how to authenticate a client web application with Newscoop, and how to extract a list of articles for a particular topic. It assumes you have a working Newscoop installation at |url|, your web application is at |app| and you have a valid Newcoop user account.
+This tutorial shows you how to authenticate a client web application with Newscoop, and how to extract a list of articles for a particular topic. It assumes you have a working Newscoop installation, you know the URI of your client web application and you have a valid Newcoop user account.
+
+.. What permissions does the Newscoop User need?
 
 Pre Authentication Setup
 -------------------------
@@ -15,13 +19,13 @@ Pre Authentication Setup
 
 .. But they still need user credentials
 
-Before authenticating your client web application, add it to the "Client List" in the `Newscoop Admin interface <http://newscoop.aes.sourcefabric.net/admin/configure-api>`_ . You'll need to provide
+Before your client web application can use the Newscoop RESTful API, you need to add it to the "Client List" in the `Newscoop Admin interface <http://newscoop.aes.sourcefabric.net/admin/configure-api>`_ . You need to provide
 
 * A name for your client web application.
 * The Newcoop Publication you are accessing.
-* The URI the authenticating servers redirects the login window to, which parses the authentication token from the URL string. 
+* The URI of your client web application which parses the authentication token sent by Newscoop.
 
-After adding the client application, make a note of the `Client id` displayed in the table, you'll need it to authenticate.
+After adding the client application, make a note of the `Client id` displayed in the table, you need it to authenticate.
 
 .. _authentication:
 
@@ -36,7 +40,7 @@ To authenticate your client web application:
                 YOUR ID, for example `9_1irxa0qcy3ms48c8c8wsgcgsc04k0s0w0g0sg4cco4kocoowoo`
 
         `redirect_uri`
-                YOUR URI, for example |app|. This must match the URI you added in the Newscoop Admin Interface above.  Remember to encode the URI. 
+                YOUR URI, for example `http://myapp.example.com/`. This must match the URI you added in the Newscoop Admin Interface above. Remember to encode the URI. 
 
         `response_type`
                 `token`
@@ -45,7 +49,7 @@ To authenticate your client web application:
 
        http://newscoop.aes.sourcefabric.net/oauth/v2/auth
        ?client_id=9_1irxa0qcy3ms48c8c8wsgcgsc04k0s0w0g0sg4cco4kocoowoo
-       &redirect_uri=http%3A%2F%2Fpeter.sourcefabric.net%2F
+       &redirect_uri=http%3A%2F%2Fmyapp.example.com%2F
        &response_type=token
 
 2. Log in to the Newscoop window you are redirected to, and click the `Allow Access` button to authenticate your client web application for one hour. You are redirected to the URI you specified in the request, with the following extra parameters:
@@ -64,15 +68,17 @@ To authenticate your client web application:
         `refresh_token`
                 Extend the validity of your authentication token for another hour `by refreshing <http://tools.ietf.org/html/rfc6749#page-47>`_. 
                
-                Example `NzRlY2E2ODY4MTNhNWVhOTdkMjU2NzgxMWQxOGQ0NzIyYzZmMDYxZGFhYTEwNTkyNWJlNTlmNzg3ZGY4MzAzNA`.
+                For example: `NzRlY2E2ODY4MTNhNWVhOTdkMjU2NzgxMWQxOGQ0NzIyYzZmMDYxZGFhYTEwNTkyNWJlNTlmNzg3ZGY4MzAzNA`.
+
+.. FIXME These last two neex explaining.
 
    A full response looks like this::
 
-      http://www.example.org/
-      #access_token=N2M4OTgxMTM2YWJiMzZmZWNkYTJkZDZlZmY2ZTBiNmUyOTMyZWNlMzNjNDM3NjMzMmU3MWI2OGI4MGM0ODhjNg
-      &expires_in=2592000
-      &token_type=bearer
-      &refresh_token=NzRlY2E2ODY4MTNhNWVhOTdkMjU2NzgxMWQxOGQ0NzIyYzZmMDYxZGFhYTEwNTkyNWJlNTlmNzg3ZGY4MzAzNA
+       http://www.example.org/
+       #access_token=N2M4OTgxMTM2YWJiMzZmZWNkYTJkZDZlZmY2ZTBiNmUyOTMyZWNlMzNjNDM3NjMzMmU3MWI2OGI4MGM0ODhjNg
+       &expires_in=2592000
+       &token_type=bearer
+       &refresh_token=NzRlY2E2ODY4MTNhNWVhOTdkMjU2NzgxMWQxOGQ0NzIyYzZmMDYxZGFhYTEwNTkyNWJlNTlmNzg3ZGY4MzAzNA
 
 
    If there is an error in authentication, or the URI does not match the URI configured in the Newscoop Admin Interface, the response includes an error code instead::
@@ -120,8 +126,8 @@ To get a list of Articles for a particular topic you need to make two requests, 
             "nextPageLink" :  "http://newscoop.aes.sourcefabric.net/content-api/topics?page=2&items_per_page=10" 
           } 
         }
-   
-    Note the pagination link at the bottom of the json items array. To look at the second page of results, add your authentication token to that URL and make another GET request.
+
+   Note the pagination link at the bottom of the json items array. To look at the second page of results, add your authentication token to that URL and make another GET request.
 
 2. To get a list of topics about Thomas de Courten, for example, make a note of the relevant `id` and make a GET request to `/rest-api/topics/{id}/{language}/articles`, replacing `{id}` with `394` and `{language}` with `de`. 
 
