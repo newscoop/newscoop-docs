@@ -343,3 +343,70 @@ Next, inside the ``Resources/views`` directory of your plugin create the ``Hooks
 The plugin response from the hook shows up in the article editing view:
 
 .. image:: http://i41.tinypic.com/16a1j85.png
+
+
+Setting up your Plugin permissions
+++++++++++++++++++++++++++++++++++++++++++
+
+This guide will help you understand how to set up permissions in your Plugin so you can restrict access for users to some resources. Next, these permissions will be available in Newscoop ACL in Backend.
+
+To register plugin permissions you have to add `PermissionsListener` first, where you will be able to define plugin permissions
+e.g.:
+
+.. code-block:: php
+
+        namespace Acme\DemoPluginBundle\EventListener;
+        
+        use Newscoop\EventDispatcher\Events\PluginPermissionsEvent;
+        use Symfony\Component\Translation\Translator;
+        
+        class PermissionsListener
+        {
+            /**
+             * Translator
+             * @var Translator
+             */
+             protected $translator;
+
+             public function __construct(Translator $translator)
+             {
+                 $this->translator = $translator;
+             }
+
+             /**
+              * Register plugin permissions in Newscoop ACL
+              *
+              * @param PluginPermissionsEvent $event
+              */
+             public function registerPermissions(PluginPermissionsEvent $event)
+             {
+                 $event->registerPermissions($this->translator->trans('ads.menu.name'), array(
+                     'plugin_classifieds_edit' => $this->translator->trans('ads.permissions.edit'),
+                 ));
+             }
+         }
+
+First parameter of `registerPermissions()` method is some custom plugin name. Second parameter is array of permissions. Key of this array is unique permission identifier and value is permission translated label.
+
+**Permission unique identifier:**
+
+e.g: `plugin_classifieds_edit` is unique permission name and its structure should be in format as presented below, to register it properly in Newscoop ACL.
+
+.. code-block:: 
+
+- plugin - plugins namspace
+- _<plugin_name>_ - plugin name
+- <permission_name> - permission name e.g. edit, manage, delete etc.
+
+Next step will be registering our newly created listener in services.yml file:
+
+.. code-block:: yaml
+
+    #Acme\DemoPluginBundle\Resources\config\services.yml
+    services:
+        acme_demo_plugin.permissions.listener:
+            class: Acme\DemoPluginBundle\EventListener\PermissionsListener
+            arguments:
+                - @translator
+            tags:
+              - { name: kernel.event_listener, event: newscoop.plugins.permissions.register, method: registerPermissions }
