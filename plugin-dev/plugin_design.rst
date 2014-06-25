@@ -345,8 +345,8 @@ The plugin response from the hook shows up in the article editing view:
 .. image:: http://i41.tinypic.com/16a1j85.png
 
 
-Setting up your Plugin permissions
-++++++++++++++++++++++++++++++++++++++++++
+Plugin permissions
+---------------------------------
 
 This guide will help you understand how to set up permissions in your Plugin so you can restrict access for users to some resources. Next, these permissions will be available in Newscoop ACL in Backend.
 
@@ -417,7 +417,8 @@ To simply check if user has given permission you have to invoke **hasPermission(
 
     $user->hasPermission('plugin_classifieds_edit');
     
-**Register permissions on plugin install/update event**
+Register permissions on plugin install/update event
+++++++++++++++++++++++++++++++++++++++++++
 
 To register permissions in Newscoop during the plugin install/update process you will need to create inside `LifecycleSubscriber.php` class, method:
 
@@ -447,7 +448,8 @@ Then on install method you can call method that you created:
         $this->setPermissions();
     }
 
-**Twig Extension**
+Plugin permissions in views - Twig Extension
+++++++++++++++++++++++++++++++++++++++++++
 
 We have also created Twig extensions so you can easly check for user permissions in Twig templates easly.
 Example usage:
