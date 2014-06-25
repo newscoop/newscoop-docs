@@ -394,9 +394,9 @@ e.g: `plugin_classifieds_edit` is unique permission name and its structure shoul
 
 .. code-block:: 
 
-- plugin - plugins namspace
-- _<plugin_name>_ - plugin name
-- <permission_name> - permission name e.g. edit, manage, delete etc.
+* plugin - plugins namspace
+* _<plugin_name>_ - plugin name
+* <permission_name> - permission name e.g. edit, manage, delete etc.
 
 Next step will be registering our newly created listener in services.yml file:
 
@@ -410,3 +410,51 @@ Next step will be registering our newly created listener in services.yml file:
                 - @translator
             tags:
               - { name: kernel.event_listener, event: newscoop.plugins.permissions.register, method: registerPermissions }
+
+To simply check if user has given permission you have to invoke **hasPermission()** method on User object:
+
+.. code-block:: php
+
+    $user->hasPermission('plugin_classifieds_edit');
+    
+**Register permissions on plugin install/update event**
+
+To register permissions in Newscoop during the plugin install/update process you will need to create inside `LifecycleSubscriber.php` class, method:
+
+.. code-block:: php
+    
+    //Acme\DemoPluginBundle\EventListener\LifecycleSubscriber.php
+
+    /**
+     * Collect plugin permissions
+     */
+    private function setPermissions()
+    {
+        $this->pluginsService->savePluginPermissions($this->pluginsService->collectPermissions($this->translator->trans('ads.menu.name')));
+    }
+    
+Then on install method you can call method that you created:
+
+.. code-block:: php
+
+    //Acme\DemoPluginBundle\EventListener\LifecycleSubscriber.php
+    public function install(GenericEvent $event)
+    {
+        $tool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
+        $tool->updateSchema($this->getClasses(), true);
+
+        $this->em->getProxyFactory()->generateProxyClasses($this->getClasses(), __DIR__ . '/../../../../library/Proxy');
+        $this->setPermissions();
+    }
+
+**Twig Extension**
+
+We have also created Twig extensions so you can easly check for user permissions in Twig templates easly.
+Example usage:
+
+.. code-block:: twig
+
+    {% if hasPermission('plugin_classifieds_delete') %}
+       <!-- user has delete permission, do some stuff here -->
+    {% endif %}
+
