@@ -354,7 +354,8 @@ To register plugin permissions you have to add `PermissionsListener` first, wher
 e.g.:
 
 .. code-block:: php
-
+        
+        <?php
         namespace Acme\DemoPluginBundle\EventListener;
         
         use Newscoop\EventDispatcher\Events\PluginPermissionsEvent;
@@ -424,6 +425,7 @@ To register permissions in Newscoop during the plugin install/update process you
 
 .. code-block:: php
     
+    <?php
     //Acme\DemoPluginBundle\EventListener\LifecycleSubscriber.php
 
     /**
@@ -437,8 +439,10 @@ To register permissions in Newscoop during the plugin install/update process you
 Then on install method you can call method that you created:
 
 .. code-block:: php
-
+  
+    <?php
     //Acme\DemoPluginBundle\EventListener\LifecycleSubscriber.php
+
     public function install(GenericEvent $event)
     {
         $tool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
