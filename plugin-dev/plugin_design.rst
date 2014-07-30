@@ -464,3 +464,181 @@ Example usage:
        <!-- user has delete permission, do some stuff here -->
     {% endif %}
 
+
+Plugin cron jobs
+---------------------------------
+
+In Newscoop 4.3 we have introduced a new way to handle cron jobs management which also affect plugins. This guide will help you to register/remove your plugin cron job(s).
+
+Okay, let's start. Imagine that you want to call some operations from within your plugin every few minutes, hours etc. which will for example update some data in database. In this case you would normally create `Console Command` which will be under `Acme\ExamplePluginBundle\Command` namespace.
+
+In this example let's use `TestCronJobCommand` which prints `Test cron job command.` text on screen. (see below).
+
+.. code-block:: php
+
+    <?php
+
+    namespace Acme\ExamplePluginBundle\Command;
+
+    use Symfony\Component\Console;
+    use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+
+    /**
+     * Test cron job command
+     */
+    class TestCronJobCommand extends ContainerAwareCommand
+    {
+        /**
+         */
+        protected function configure()
+        {
+            $this->setName('example:test')
+                ->setDescription('Example test cron job command');
+        }
+
+        /**
+         */
+        protected function execute(Console\Input\InputInterface $input, Console\Output\OutputInterface $output)
+        {
+            try {
+                $output->writeln('<info>Test cron job command.</info>');
+            } catch (\Exception $e) {
+                $output->writeln('<error>Error occured: '.$e->getMessage().'</error>');
+
+                return false;
+            }
+        }
+    }
+
+We have our console command class which will be representing our cron job. Next step that we should do is to register new cron jobs (console commands) on plugin install/update event.
+
+Register cron jobs on plugin install/update event
+++++++++++++++++++++++++++++++++++++++++++
+
+To register cron job(s) in Newscoop during the plugin install/update process we will need to add some extra properties, methods etc., inside `LifecycleSubscriber.php` class.
+
+Frist of all we have to add `SchedulerService` to `LifecycleSubscriber` constructor and define our cron jobs:
+
+.. code-block:: twig
+
+    services:
+        newscoop_example_plugin.lifecyclesubscriber:
+            class: Newscoop\ExamplePluginBundle\EventListener\LifecycleSubscriber
+            arguments:
+                - @em
+                - @newscoop.scheduler
+
+As you can see we have added `newscoop.scheduler` service to `LifecycleSubscriber` class. Let's define cron jobs now:
+
+.. code-block:: php
+
+    <?php
+    //Acme\ExamplePluginBundle\EventListener\LifecycleSubscriber.php
+
+    protected $scheduler;
+
+    protected $cronjobs;
+
+    public function __construct(EntityManager $em, SchedulerService $scheduler)
+    {
+        $appDirectory = realpath(__DIR__.'/../../../../application/console');
+        $this->em = $em;
+        $this->scheduler = $scheduler;
+        $this->cronjobs = array(
+            "Example plugin test cron job" => array(
+                'command' => $appDirectory . ' example:test',
+                'schedule' => '* * * * *',
+            ),
+            /*"Another test cron job" => array(
+                'command' => $appDirectory . ' example:anothertest',
+                'schedule' => '* * * * *',
+            ),*/
+        );
+    }
+
+As you can see above we have added new property called `cronjobs` which is an array of our plugin cron jobs. `Example plugin test cron job` is custom name of our cron job. Value of given key is array of cron job parameters which you can customize however you like (see the full list of parameters below).
+
+**Full list of parameters:**
+ - string `command` The job to run (either a shell command or anonymous PHP function) (required) - in this example it's our `TestCronJobCommand`
+ - string `schedule` Crontab schedule format (`man -s 5 crontab`) (required)
+ - boolean `enabled` Run this job at scheduled times
+ - boolean `debug` Send `scheduler` internal messages to 'debug.log'
+ - string `dateFormat` Format for dates on scheduler log messages
+ - string `output` Redirect `stdout` and `stderr` to this file
+ - string `runOnHost` Run jobs only on this hostname
+ - string `environment` Development environment for this job
+ - string `runAs` Run as this user, if crontab user has `sudo` privileges
+
+Next, we have to create method in same class to add our cron jobs so they can be executed by given schedule.
+
+.. code-block:: php
+
+    <?php
+    //Acme\ExamplePluginBundle\EventListener\LifecycleSubscriber.php
+
+    /**
+     * Add plugin cron jobs
+     */
+    private function addJobs()
+    {
+        foreach ($this->cronjobs as $jobName => $jobConfig) {
+            $this->scheduler->registerJob($jobName, $jobConfig);
+        }
+    }
+
+Then on install/update method you can add our newly creaded `addJobs` method.
+
+.. code-block:: php
+
+    <?php
+    //Acme\DemoPluginBundle\EventListener\LifecycleSubscriber.php
+
+    public function install(GenericEvent $event)
+    {
+        $tool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
+        $tool->updateSchema($this->getClasses(), true);
+
+        $this->em->getProxyFactory()->generateProxyClasses($this->getClasses(), __DIR__ . '/../../../../library/Proxy');
+        $this->addJobs();
+    }
+
+After plugin install process, `Example plugin test cron job` will be inserted into database and you will be able to manage it via `System Preferences -> Background Jobs Settings`
+
+![System Preferences -> Background Jobs Settings](http://oi62.tinypic.com/123prbs.jpg)
+
+New plugin cron job is visible on 8th position.
+
+Remove registered cron jobs on plugin remove event
+++++++++++++++++++++++++++++++++++++++++++
+
+When you will want to uninstall your plugin we should also get rid of cron jobs that are not used anymore and were registered when you installed your plugin. To do so we will have to add extra method to remove these cron jobs.
+
+.. code-block:: php
+
+    <?php
+    //Acme\ExamplePluginBundle\EventListener\LifecycleSubscriber.php
+
+    /**
+     * Remove plugin cron jobs
+     */
+    private function removeJobs()
+    {
+        foreach ($this->cronjobs as $jobName => $jobConfig) {
+            $this->scheduler->removeJob($jobName, $jobConfig);
+        }
+    }
+
+and call it on `remove` event:
+
+.. code-block:: php
+
+    <?php
+    //Acme\ExamplePluginBundle\EventListener\LifecycleSubscriber.php
+    public function remove(GenericEvent $event)
+    {
+        $tool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
+        $tool->dropSchema($this->getClasses(), true);
+        $this->removeJobs();
+    }
+
+When we will uninstall plugin, all cron jobs will be automatically removed.
