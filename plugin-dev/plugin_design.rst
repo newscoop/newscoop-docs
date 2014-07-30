@@ -3,6 +3,8 @@ Plugin Design
 
 How to write your plugin for better integration with Newscoop.
 
+You can also see `Example Plugin <https://github.com/KnpLabs/KnpMenu>`_ code with all features described in this documentation.
+
 Managing the Plugin Lifecycle
 --------------------------------
 
@@ -604,7 +606,7 @@ Then on install/update method you can add our newly creaded `addJobs` method.
 
 After plugin install process, `Example plugin test cron job` will be inserted into database and you will be able to manage it via `System Preferences -> Background Jobs Settings`
 
-![System Preferences -> Background Jobs Settings](http://oi62.tinypic.com/123prbs.jpg)
+.. image:: http://oi62.tinypic.com/123prbs.jpg
 
 New plugin cron job is visible on 8th position.
 
