@@ -207,6 +207,8 @@ The Newscoop Admin menu uses the `KNP Menu Library <https://github.com/KnpLabs/K
 
     newscoop_example_plugin.configure_menu_listener:
         class: Newscoop\ExamplePluginBundle\EventListener\ConfigureMenuListener
+        arguments:
+            - @translator
         tags:
           - { name: kernel.event_listener, event: newscoop_newscoop.menu_configure, method: onMenuConfigure }
 
@@ -219,13 +221,24 @@ and the menu configuration listener to your plugin:
         namespace Newscoop\ExamplePluginBundle\EventListener;
 
         use Newscoop\NewscoopBundle\Event\ConfigureMenuEvent;
+        use Symfony\Component\Translation\Translator;
 
         class ConfigureMenuListener
         {
+            protected $translator;
+
+            /**
+             * @param Translator $translator
+             */
+            public function __construct(Translator $translator)
+            {
+                $this->translator = $translator;
+            }
+
             public function onMenuConfigure(ConfigureMenuEvent $event)
             {
                 $menu = $event->getMenu();
-                $menu[getGS('Plugins')]->addChild(
+                $menu[$this->translator->trans('Plugins')]->addChild(
                     'Example Plugin',
                     array('uri' => $event->getRouter()->generate('newscoop_exampleplugin_default_admin'))
                 );
@@ -605,7 +618,7 @@ And add the `addJobs` methor to the install/update event:
 
 Now, when you install the plugin, the `Example plugin test cron job` is inserted into the database, and can be managed via `System Preferences -> Background Jobs Settings`. Plugin 8 in the example screenshot:
 
-.. image:: http://oi62.tinypic.com/123prbs.jpg
+.. image:: http://oi61.tinypic.com/p91j4.jpg
 
 
 Removing Registered Cron Jobs on Plugin Remove Event
