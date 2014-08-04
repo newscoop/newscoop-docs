@@ -8,7 +8,7 @@ You can also see `Example Plugin <https://github.com/KnpLabs/KnpMenu>`_ code wit
 Managing the Plugin Lifecycle
 --------------------------------
 
-To manage the plugin from installation to removal, register the following event subscribers: 
+To manage the plugin from installation to removal, register the following event subscribers:
 
   - plugin.install_vendor_plugin_name
   - plugin.remove_vendor_plugin_name
@@ -124,7 +124,7 @@ The Newscoop plugins system is based on the Symfony Bundles system, so almost al
                 return $this->render('NewscoopExamplePluginBundle:Default:index.html.smarty');
             }
         }
- 
+
 Note the annotation for route configuration ``@Route("/testnewscoop")``. Register the controller class in the system:
 
 .. code-block:: yaml
@@ -226,7 +226,7 @@ and the menu configuration listener to your plugin:
             {
                 $menu = $event->getMenu();
                 $menu[getGS('Plugins')]->addChild(
-                    'Example Plugin', 
+                    'Example Plugin',
                     array('uri' => $event->getRouter()->generate('newscoop_exampleplugin_default_admin'))
                 );
             }
@@ -235,7 +235,7 @@ and the menu configuration listener to your plugin:
 Adding Smarty Template Plugins
 -------------------------------
 
-The Newscoop template language is Smarty3. Any Smarty3 plugins in 
+The Newscoop template language is Smarty3. Any Smarty3 plugins in
 
 ``<ExamplePluginBundle>/Resources/smartyPlugins``
 
@@ -269,7 +269,7 @@ Example hook:
 
             echo \Zend_Registry::get('container')->getService('newscoop.plugins.service')
                 ->renderPluginHooks('newscoop_admin.interface.article.edit.sidebar', null, array(
-                    'article' => $articleObj, 
+                    'article' => $articleObj,
                     'edit_mode' => $f_edit_mode
                 ));
         ?>
@@ -356,13 +356,13 @@ To register plugin permissions you have to add `PermissionsListener` first, wher
 e.g.:
 
 .. code-block:: php
-        
+
         <?php
         namespace Acme\DemoPluginBundle\EventListener;
-        
+
         use Newscoop\EventDispatcher\Events\PluginPermissionsEvent;
         use Symfony\Component\Translation\Translator;
-        
+ 
         class PermissionsListener
         {
             /**
@@ -395,7 +395,7 @@ First parameter of `registerPermissions()` method is some custom plugin name. Se
 
 e.g: `plugin_classifieds_edit` is unique permission name and its structure should be in format as presented below, to register it properly in Newscoop ACL.
 
-.. code-block:: 
+.. code-block::
 
 * plugin - plugins namspace
 * _<plugin_name>_ - plugin name
@@ -419,14 +419,14 @@ To simply check if user has given permission you have to invoke **hasPermission(
 .. code-block:: php
 
     $user->hasPermission('plugin_classifieds_edit');
-    
+ 
 Register permissions on plugin install/update event
 ++++++++++++++++++++++++++++++++++++++++++
 
 To register permissions in Newscoop during the plugin install/update process you will need to create inside `LifecycleSubscriber.php` class, method:
 
 .. code-block:: php
-    
+
     <?php
     //Acme\DemoPluginBundle\EventListener\LifecycleSubscriber.php
 
@@ -437,11 +437,11 @@ To register permissions in Newscoop during the plugin install/update process you
     {
         $this->pluginsService->savePluginPermissions($this->pluginsService->collectPermissions($this->translator->trans('ads.menu.name')));
     }
-    
+ 
 Then on install method you can call method that you created:
 
 .. code-block:: php
-  
+
     <?php
     //Acme\DemoPluginBundle\EventListener\LifecycleSubscriber.php
 
@@ -467,14 +467,14 @@ Example usage:
     {% endif %}
 
 
-Plugin cron jobs
+Plugin Cron Jobs
 ---------------------------------
 
-In Newscoop 4.3 we have introduced a new way to handle cron jobs management which also affect plugins. This guide will help you to register/remove your plugin cron job(s).
+Newscoop 4.3 introduces a new cron job management system, which also affects repetitive tasks in plugins.
 
-Okay, let's start. Imagine that you want to call some operations from within your plugin every few minutes, hours etc. which will for example update some data in database. In this case you would normally create `Console Command` which will be under `Acme\ExamplePluginBundle\Command` namespace.
+Before Newscoop 4.3, to call a function ever few hours you would create a `Console Command` in the `Acme\ExamplePluginBundle\Command` namespace.
 
-In this example let's use `TestCronJobCommand` which prints `Test cron job command.` text on screen. (see below).
+In Newscoop 4.3 you now use `TestCronJobCommand`. The following example prints `Test cron job command.`.
 
 .. code-block:: php
 
@@ -512,14 +512,14 @@ In this example let's use `TestCronJobCommand` which prints `Test cron job comma
         }
     }
 
-We have our console command class which will be representing our cron job. Next step that we should do is to register new cron jobs (console commands) on plugin install/update event.
+To run the cron job, register it on plugin install and update.
 
-Register cron jobs on plugin install/update event
-++++++++++++++++++++++++++++++++++++++++++
+Registering Cron Jobs on Plugin Install/Update
+++++++++++++++++++++++++++++++++++++++++++++++++
 
-To register cron job(s) in Newscoop during the plugin install/update process we will need to add some extra properties, methods etc., inside `LifecycleSubscriber.php` class.
+To register a cron job during the plugin install/update process, edit the `LifecycleSubscriber.php` class.
 
-Frist of all we have to add `SchedulerService` to `LifecycleSubscriber` constructor and define our cron jobs:
+Add the `newscoop.scheduler` service to `LifecycleSubscriber` class.
 
 .. code-block:: twig
 
@@ -530,7 +530,7 @@ Frist of all we have to add `SchedulerService` to `LifecycleSubscriber` construc
                 - @em
                 - @newscoop.scheduler
 
-As you can see we have added `newscoop.scheduler` service to `LifecycleSubscriber` class. Let's define cron jobs now:
+Add a new property called `cronjobs` which is an array of our plugin cron jobs.
 
 .. code-block:: php
 
@@ -558,11 +558,10 @@ As you can see we have added `newscoop.scheduler` service to `LifecycleSubscribe
         );
     }
 
-As you can see above we have added new property called `cronjobs` which is an array of our plugin cron jobs. `Example plugin test cron job` is custom name of our cron job. Value of given key is array of cron job parameters which you can customize however you like (see the full list of parameters below).
+Use any of the following parameters to define cron jobs:
 
-**Full list of parameters:**
- - string `command` The job to run (either a shell command or anonymous PHP function) (required) - in this example it's our `TestCronJobCommand`
- - string `schedule` Crontab schedule format (`man -s 5 crontab`) (required)
+ - string `command` (**required**) The job to run, either a shell command or an anonymous PHP function. In this example it's our `TestCronJobCommand`
+ - string `schedule` (**required**) Crontab schedule format (`man -s 5 crontab`)
  - boolean `enabled` Run this job at scheduled times
  - boolean `debug` Send `scheduler` internal messages to 'debug.log'
  - string `dateFormat` Format for dates on scheduler log messages
@@ -571,7 +570,7 @@ As you can see above we have added new property called `cronjobs` which is an ar
  - string `environment` Development environment for this job
  - string `runAs` Run as this user, if crontab user has `sudo` privileges
 
-Next, we have to create method in same class to add our cron jobs so they can be executed by given schedule.
+Create a method in the same class to add the cron jobs.
 
 .. code-block:: php
 
@@ -588,7 +587,7 @@ Next, we have to create method in same class to add our cron jobs so they can be
         }
     }
 
-Then on install/update method you can add our newly creaded `addJobs` method.
+And add the `addJobs` methor to the install/update event:
 
 .. code-block:: php
 
@@ -604,16 +603,17 @@ Then on install/update method you can add our newly creaded `addJobs` method.
         $this->addJobs();
     }
 
-After plugin install process, `Example plugin test cron job` will be inserted into database and you will be able to manage it via `System Preferences -> Background Jobs Settings`
+Now, when you install the plugin, the `Example plugin test cron job` is inserted into the database, and can be managed via `System Preferences -> Background Jobs Settings`. Plugin 8 in the example screenshot:
 
 .. image:: http://oi62.tinypic.com/123prbs.jpg
 
-New plugin cron job is visible on 8th position.
 
-Remove registered cron jobs on plugin remove event
-++++++++++++++++++++++++++++++++++++++++++
+Removing Registered Cron Jobs on Plugin Remove Event
++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-When you will want to uninstall your plugin we should also get rid of cron jobs that are not used anymore and were registered when you installed your plugin. To do so we will have to add extra method to remove these cron jobs.
+Cron jobs that are installed by a plugin also need to be removed when the plugin is uninstalled.
+
+Add a function to remove the cron job:
 
 .. code-block:: php
 
@@ -630,7 +630,7 @@ When you will want to uninstall your plugin we should also get rid of cron jobs 
         }
     }
 
-and call it on `remove` event:
+and call it during plugin `remove` event:
 
 .. code-block:: php
 
@@ -642,5 +642,3 @@ and call it on `remove` event:
         $tool->dropSchema($this->getClasses(), true);
         $this->removeJobs();
     }
-
-When we will uninstall plugin, all cron jobs will be automatically removed.
