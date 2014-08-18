@@ -360,13 +360,13 @@ The plugin response from the hook shows up in the article editing view:
 .. image:: http://i41.tinypic.com/16a1j85.png
 
 
-Plugin permissions
+
+User Permissions in Plugins
 ---------------------------------
 
-This guide will help you understand how to set up permissions in your Plugin so you can restrict access for users to some resources. Next, these permissions will be available in Newscoop ACL in Backend.
+A guide to restricting access to resources in your plugin to certain users. 
 
-To register plugin permissions you have to add `PermissionsListener` first, where you will be able to define plugin permissions
-e.g.:
+Add a `PermissionsListener` class where you define plugin permissions:
 
 .. code-block:: php
 
@@ -402,19 +402,19 @@ e.g.:
              }
          }
 
-First parameter of `registerPermissions()` method is some custom plugin name. Second parameter is array of permissions. Key of this array is unique permission identifier and value is permission translated label.
+The first parameter of the `registerPermissions()` method is a custom plugin name, the second parameter is an array of permissions where each key is a unique permission name and each value is a translated permission label.
 
-**Permission unique identifier:**
+For example, `plugin_classifieds_edit` is the unique permission name, and the translated permission label should be in the following form::
 
-e.g: `plugin_classifieds_edit` is unique permission name and its structure should be in format as presented below, to register it properly in Newscoop ACL.
+   plugin.plugin_name.permission_name
 
-.. code-block::
+Where: 
 
-* plugin - plugins namspace
-* _<plugin_name>_ - plugin name
-* <permission_name> - permission name e.g. edit, manage, delete etc.
+*  `plugin` - plugin namspace, for example `ads`
+* `plugin_name` - plugin name, for example `permissions`
+* `permission_name` - permission name, add, delete, etc, for example `edit`
 
-Next step will be registering our newly created listener in services.yml file:
+Registering the listener in `services.yml`:
 
 .. code-block:: yaml
 
@@ -427,16 +427,16 @@ Next step will be registering our newly created listener in services.yml file:
             tags:
               - { name: kernel.event_listener, event: newscoop.plugins.permissions.register, method: registerPermissions }
 
-To simply check if user has given permission you have to invoke **hasPermission()** method on User object:
+To check if a user has given permission, call **hasPermission()** method on `User` object:
 
 .. code-block:: php
 
     $user->hasPermission('plugin_classifieds_edit');
- 
-Register permissions on plugin install/update event
-++++++++++++++++++++++++++++++++++++++++++
+    
+Registering Permissions on Plugin Install/update
++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-To register permissions in Newscoop during the plugin install/update process you will need to create inside `LifecycleSubscriber.php` class, method:
+To register permissions during plugin installation or update process, create a method in `LifecycleSubscriber.php`:
 
 .. code-block:: php
 
@@ -451,7 +451,7 @@ To register permissions in Newscoop during the plugin install/update process you
         $this->pluginsService->savePluginPermissions($this->pluginsService->collectPermissions($this->translator->trans('ads.menu.name')));
     }
  
-Then on install method you can call method that you created:
+Then during plugin installation, call the `setPermissions()` method that you created:
 
 .. code-block:: php
 
@@ -467,11 +467,10 @@ Then on install method you can call method that you created:
         $this->setPermissions();
     }
 
-Plugin permissions in views - Twig Extension
-++++++++++++++++++++++++++++++++++++++++++
+Checking Permissions in Views - Twig Extension
+++++++++++++++++++++++++++++++++++++++++++++++++++
 
-We have also created Twig extensions so you can easly check for user permissions in Twig templates easly.
-Example usage:
+Check user permissions in Twig templates:
 
 .. code-block:: twig
 
