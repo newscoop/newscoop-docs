@@ -150,7 +150,7 @@ To get a list of Articles for a particular topic you need to make two requests, 
 
          ...
 
-   A full list of fields in the json response is in the `API reference <http://newscoop-example.com/documentation/rest-api/#get--content-api-comments-article-{number}-{language}-{order}-recommended.{_format}>`_.
+   A full list of fields in the json response is in the `API reference <http://newscoop-example.com/documentation/rest-api/#get--rest-api-comments-article-{number}-{language}-{order}-recommended.{_format}>`_.
 
 3. To get the comments for each article, make a GET request *for each article* to ``/rest-api/comments/article/{number}/{language}/nested``, replacing ``{number}`` with the article number and ``{language}`` with the article language code. As usual, add the authentication parameters ``&access_token``. A full request looks like this::
 
