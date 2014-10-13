@@ -12,11 +12,16 @@ Pre Authentication Setup
 
 .. But they still need user credentials
 
-Before your client web application can use the Newscoop RESTful API, you need to add it to the "Client List" in the `Newscoop Admin interface <http://newscoop.aes.sourcefabric.net/admin/configure-api>`_ . You need to provide
+Before your client web application can use the Newscoop RESTful API, you need to add it to the "Client List" in the `Newscoop Admin interface <http://newscoop-example.com/admin/configure-api>`_ . You need to provide
 
 * A name for your client web application.
 * The Newcoop Publication you are accessing.
 * The URI of your client web application which parses the authentication token sent by Newscoop.
+
+In this article, we use the following example URLS:
+
+* ``http://myapp.example.com`` your application.
+* ``http://newscoop-example.com`` your Newscoop server installation.
 
 After adding the client application, make a note of the "Client id" displayed in the table, you need it to authenticate.
 
@@ -40,7 +45,7 @@ To authenticate your client web application:
 
    A full request looks like this::
 
-       http://newscoop.aes.sourcefabric.net/oauth/v2/auth
+       http://newscoop-example.com/oauth/v2/auth
        ?client_id=9_1irxa0qcy3ms48c8c8wsgcgsc04k0s0w0g0sg4cco4kocoowoo
        &redirect_uri=http%3A%2F%2Fmyapp.example.com%2F
        &response_type=token
@@ -52,7 +57,7 @@ To authenticate your client web application:
 
                 For example: ``N2M4OTgxMTM2YWJiMzZmZWNkYTJkZDZlZmY2ZTBiNmUyOTMyZWNlMzNjNDM3NjMzMmU3MWI2OGI4MGM0ODhjNg``.
 
-        ```expires_in``
+        ``expires_in``
                 Number of seconds before the authentication token expires. After that you need to request a new one, or refresh the old one. Example ``2592000``.
 
         ``token_type``
@@ -90,7 +95,7 @@ To get a list of Articles for a particular topic you need to make two requests, 
 
    The request looks like this::
        
-       http://newscoop.aes.sourcefabric.net/content-api/topics
+       http://newscoop-example.com/api/topics
        ?access_token=N2M4OTgxMTM2YWJiMzZmZWNkYTJkZDZlZmY2ZTBiNmUyOTMyZWNlMzNjNDM3NjMzMmU3MWI2OGI4MGM0ODhjNg
 
    The response looks like this::
@@ -114,7 +119,7 @@ To get a list of Articles for a particular topic you need to make two requests, 
             "itemsPerPage" :  10 ,
             "currentPage" :  1 , 
             "itemsCount" :  771 , 
-            "nextPageLink" :  "http://newscoop.aes.sourcefabric.net/content-api/topics?access_token=N2M4OTgxMTM2YWJiMzZmZWNkYTJkZDZlZmY2ZTBiNmUyOTMyZWNlMzNjNDM3NjMzMmU3MWI2OGI4MGM0ODhjNg&page=2&items_per_page=10" 
+            "nextPageLink" :  "http://newscoop-example.com/api/topics?access_token=N2M4OTgxMTM2YWJiMzZmZWNkYTJkZDZlZmY2ZTBiNmUyOTMyZWNlMzNjNDM3NjMzMmU3MWI2OGI4MGM0ODhjNg&page=2&items_per_page=10" 
           } 
         }
 
@@ -126,7 +131,7 @@ To get a list of Articles for a particular topic you need to make two requests, 
 
    ::
 
-    http://newscoop.aes.sourcefabric.net/content-api/topics/394/de/articles
+    http://newscoop-example.com/api/topics/394/de/articles
     ?access_token=N2M4OTgxMTM2YWJiMzZmZWNkYTJkZDZlZmY2ZTBiNmUyOTMyZWNlMzNjNDM3NjMzMmU3MWI2OGI4MGM0ODhjNg
 
    The response contains the topic id and title, and a list of items::
@@ -145,11 +150,11 @@ To get a list of Articles for a particular topic you need to make two requests, 
 
          ...
 
-   A full list of fields in the json response is in the `API reference <http://newscoop.aes.sourcefabric.net/documentation/rest-api/#get--content-api-comments-article-{number}-{language}-{order}-recommended.{_format}>`_.
+   A full list of fields in the json response is in the `API reference <http://newscoop-example.com/documentation/rest-api/#get--content-api-comments-article-{number}-{language}-{order}-recommended.{_format}>`_.
 
 3. To get the comments for each article, make a GET request *for each article* to ``/rest-api/comments/article/{number}/{language}/nested``, replacing ``{number}`` with the article number and ``{language}`` with the article language code. As usual, add the authentication parameters ``&access_token``. A full request looks like this::
 
-    http://newscoop.aes.sourcefabric.net/content-api/comments/article/3/de/nested
+    http://newscoop-example.com/api/comments/article/3/de/nested
     ?access_token=N2M4OTgxMTM2YWJiMzZmZWNkYTJkZDZlZmY2ZTBiNmUyOTMyZWNlMzNjNDM3NjMzMmU3MWI2OGI4MGM0ODhjNg
 
    And an extract of the response::
@@ -160,7 +165,7 @@ To get a list of Articles for a particular topic you need to make two requests, 
                "author":"Manuel Egli",
                "id":4590,
                "commenter":{
-                   "image":"newscoop.aes.sourcefabric.net\/images\/user_placeholder_2.png",
+                   "image":"newscoop-example.com\/images\/user_placeholder_2.png",
                    "id":187,
                    "name":"Manuel Egli",
                    "email":"manuel.egli@gmx.ch",
