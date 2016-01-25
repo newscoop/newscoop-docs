@@ -12,6 +12,7 @@ Contents:
    :maxdepth: 2
 
    custom_template_lists.rst
+   custom_RSS_feeds.rst
 
 
 
@@ -21,4 +22,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
