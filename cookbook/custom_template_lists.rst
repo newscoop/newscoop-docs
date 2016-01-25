@@ -1,63 +1,36 @@
-Custom template list
---------------------
+Creating Custom Lists for Newscoop Templates
+--------------------------------------------
 
-In Newscoop templates you can use simple lists like ``{{ list_articles }}{{ /list_articles }}`` or ``{{ list_users }}{{ /list_users }}`` to display content. Our lists are builded on top of `Smarty3 plugins block functions <http://www.smarty.net/docsv2/en/plugins.block.functions.tpl>`_.
+In Newscoop templates you can use Smarty3 plugin blocks to display Newscoop content as a list:
 
-To create nice list we will need 4 files:
- - NewscoopExampleBundle/Resources/smartyPlugins/block.list_example_content.php - smarty plugin block function
- - NewscoopExampleBundle/TemplateList/ExampleContentCriteria.php - criteria file for list
- - NewscoopExampleBundle/TemplateList/ExampleContentList.php - list
- - NewscoopExampleBundle/EventListener/ListObjectsListener.php - listener with list registration
+.. code:: 
 
+        {{ list_articles }}{{ /list_articles }}
+        
+        {{ list_users }}{{ /list_users }}
 
-Lets start form ExampleContentCriteria.php file. Criteria class describe your List for templators, it define properties to be used in list constraints, order and other lists parameters.
+To create custom lists with different Newscoop content, look at the following four files:
 
-Lets asume that our 'Example Content' is an object with properties: ``id, name, description, created_at``. So our criteria object should allow us order list by ``id, name, created_at`` and filter by ``id, name, created_at``. This is our criteria:
+List content
+        `NewscoopExampleBundle/TemplateList/ExampleContentList.php`
 
-.. code-block:: php
+List criteria
+        `NewscoopExampleBundle/TemplateList/ExampleContentCriteria.php`
 
-    <?php
-    /**
-     * @package Newscoop\ExamplePluginBundle
-     * @author Paweł Mikołajczuk <pawel.mikolajczuk@sourcefabric.org>
-     * @copyright 2014 Sourcefabric o.p.s.
-     * @license http://www.gnu.org/licenses/gpl-3.0.txt
-     */
+Smarty block
+        `NewscoopExampleBundle/Resources/smartyPlugins/block.list_example_content.php`
+        
+Listener
+        `NewscoopExampleBundle/EventListener/ListObjectsListener.php` 
 
-    namespace Newscoop\ExamplePluginBundle\TemplateList;
+List Content
++++++++++++++++
 
-    use Newscoop\Criteria;
-
-    class ExampleContentCriteria extends Criteria
-    {
-        /**
-         * @var int
-         */
-        public $id;
-
-        /**
-         * @var string
-         */
-        public $name;
-
-        /**
-         * @var \DateTime
-         */
-        public $created_at;
-    }
-
-
-Next will be ExampleContentList.php List class is responsible for delivering objects from source to template engine. It must be registered in CampContext class (with ListObjectsListener.php). Lets do it.
+The List Class delivers the content to the template. It must be registered in the `CampContext` class with `ListObjectsListener.php`. 
 
 .. code-block:: php
 
     <?php
-    /**
-     * @package Newscoop\ExamplePluginBundle
-     * @author Paweł Mikołajczuk <pawel.mikolajczuk@sourcefabric.org>
-     * @copyright 2014 Sourcefabric o.p.s.
-     * @license http://www.gnu.org/licenses/gpl-3.0.txt
-     */
 
     namespace Newscoop\ExamplePluginBundle\TemplateList;
 
@@ -126,18 +99,46 @@ Next will be ExampleContentList.php List class is responsible for delivering obj
         }
     }
 
-Next file on our todo list is ``block.list_example_content.php``. Block provides special function to our template system, bootstrap our list and configure paginator (with page parameter name).
+
+List Criteria
+++++++++++++++++++++++++++++
+
+The Criteria class defines the list properties, constraints, sorting order and other parameters. A custom list for example content with an object with an `id`, `name`, `description` and `created_by_date` should allow sorting and filtering by `id`, `name` and `created_by_date`.
 
 .. code-block:: php
 
     <?php
-    /**
-     * @package Newscoop\ExamplePluginBundle
-     * @author Paweł Mikołajczuk <pawel.mikolajczuk@sourcefabric.org>
-     * @copyright 2014 Sourcefabric o.p.s.
-     * @license http://www.gnu.org/licenses/gpl-3.0.txt
-     */
 
+    namespace Newscoop\ExamplePluginBundle\TemplateList;
+
+    use Newscoop\Criteria;
+
+    class ExampleContentCriteria extends Criteria
+    {
+        /**
+         * @var int
+         */
+        public $id;
+
+        /**
+         * @var string
+         */
+        public $name;
+
+        /**
+         * @var \DateTime
+         */
+        public $created_by_date;
+    }
+
+Smarty Block
++++++++++++++++++++
+
+The smarty block is the implementation of the list, template tags and paginator. 
+
+.. code-block:: php
+
+    <?php
     /**
      * list_example_content block plugin
      *
@@ -155,13 +156,15 @@ Next file on our todo list is ``block.list_example_content.php``. Block provides
         $context = $smarty->getTemplateVars('gimme');
         // get paginator service
         $paginatorService = \Zend_Registry::get('container')->get('newscoop.listpaginator.service');
+        $cacheService = \Zend_Registry::get('container')->get('newscoop.cache');
 
         if (!isset($content)) { // init
             $start = $context->next_list_start('\Newscoop\ExamplePluginBundle\TemplateList\ExampleContentList');
             // initiate list object, pass new criteria object and paginatorService
             $list = new \Newscoop\ExamplePluginBundle\TemplateList\ExampleContentList(
                 new \Newscoop\ExamplePluginBundle\TemplateList\ExampleContentCriteria(),
-                $paginatorService
+                $paginatorService,
+                $cacheService
             );
 
             // inject page parameter name to paginatorService, every list have own name used for pagination
@@ -201,18 +204,14 @@ Next file on our todo list is ``block.list_example_content.php``. Block provides
         return $content;
     }
 
+Listener
++++++++++++++++++++++
 
-We are almost done! Now we need register in Newscoop our list and new object. For this we will use listener class (``ListObjectsListener.php``).
+Register the `List object` in the Newscoop listener class.
 
 .. code-block:: php
 
     <?php
-    /**
-     * @package Newscoop\ExamplePluginBundle
-     * @author Paweł Mikołajczuk <pawel.mikolajczuk@sourcefabric.org>
-     * @copyright 2014 Sourcefabric o.p.s.
-     * @license http://www.gnu.org/licenses/gpl-3.0.txt
-     */
 
     namespace Newscoop\ExamplePluginBundle\EventListener;
 
@@ -241,7 +240,7 @@ We are almost done! Now we need register in Newscoop our list and new object. Fo
         }
     }
 
-Now we need register listener in newscoop.
+And register the listener in the Newscoop configuration.
 
 .. code-block:: yaml
 
@@ -252,7 +251,8 @@ Now we need register listener in newscoop.
           - { name: kernel.event_listener, event: newscoop.listobjects.register, method: registerObjects }    
 
 
-How to use it in template:
+Using the Custom Block in a Template
++++++++++++++++++++++++++++++++++++++++
 
 .. code-block:: smarty
 
