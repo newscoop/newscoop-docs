@@ -4,11 +4,11 @@ Cache your data with Newscoop Cache Service
 In Newscoop we have two types of built in caching:
 
 * Templates cache - based on smarty templates cache for static results
-* Data cache - caching of mixed values with key on selected cach driver (Array, APC, Memcache, Memcached, Redis)
+* Data cache - caching of mixed values with key on selected cache driver (Array, APC, Memcache, Memcached, Redis)
 
-In this cookbook we will learn how to use data caching.
+In this Cookbook chapter we will learn how to use data caching.
 
-First we need to get cache service instance, it's easy because it's already as a service (under "newscoop.cache" name) in our container. 
+First we need to get a cache service instance, which is easy because it's already a service (under "newscoop.cache" name) in our container. 
 
 .. code-block:: php
 
@@ -42,7 +42,7 @@ So we have $cacheService, let's cache some data results:
         $cacheService->save($cacheId, $someResults);
     }
 
-Sometimes you change data set (you add or remove new Example) - then to get fresh data you need to remove existing cache. See how to do this:
+Sometimes you change data set (you add or remove a new example) - then to get fresh data you need to remove the existing cache. Let's see how to do this:
 
 .. code-block:: php
 
@@ -50,7 +50,7 @@ Sometimes you change data set (you add or remove new Example) - then to get fres
     $cacheId = 'our_unique_cache_id_for_this_data_set';
     $cacheService->delete($cacheId);
 
-if you want to clear whole driver cache, then just do:
+If you want to clear the whole driver cache, then just do:
 
 .. code-block:: php
 
