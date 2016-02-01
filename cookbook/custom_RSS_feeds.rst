@@ -57,3 +57,7 @@ We assume that your Article Type have filed called ``deck`` (with lead for artic
         {{/list_articles}}
       </channel>
     </rss>
+
+*RSS feed response content type:*
+
+Response for all rss feeds from rss controller will have ``application/rss+xml; charset=UTF-8`` Content-Type header.
