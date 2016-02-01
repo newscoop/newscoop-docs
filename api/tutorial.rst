@@ -38,7 +38,7 @@ To authenticate your client web application:
                 Your client id, for example ``9_1irxa0qcy3ms48c8c8wsgcgsc04k0s0w0g0sg4cco4kocoowoo``
 
         ``redirect_uri``
-                The uri of your client web application, for example ``http://myapp.example.com/``. This must match the URI you added in the Newscoop Admin Interface above. Remember to encode the URI. 
+                The URI of your client web application, for example ``http://myapp.example.com/``. This must match the URI you added in the Newscoop Admin Interface above. Remember to encode the URI. 
 
         ``response_type``
                 ``token``

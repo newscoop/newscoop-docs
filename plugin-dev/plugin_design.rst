@@ -427,7 +427,7 @@ Registering the listener in `services.yml`:
             tags:
               - { name: kernel.event_listener, event: newscoop.plugins.permissions.register, method: registerPermissions }
 
-To check if a user has given permission, call **hasPermission()** method on `User` object:
+To check if a user has been given a permission, call **hasPermission()** method on `User` object:
 
 .. code-block:: php
 
