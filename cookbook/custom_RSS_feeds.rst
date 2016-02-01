@@ -61,3 +61,21 @@ We assume that your Article Type have filed called ``deck`` (with lead for artic
 *RSS feed response content type:*
 
 Response for all rss feeds from rss controller will have ``application/rss+xml; charset=UTF-8`` Content-Type header.
+
+*Generate url's to feeds from template:*
+
+.. code-block:: smarty
+
+    // Default language is English
+    {{ generate_url route="newscoop_feed" }} => /en/feed/
+
+
+.. code-block:: smarty
+
+    // Custom language, default feed template
+    {{ generate_url route="newscoop_feed" parameters=['languageCode'=> 'pl' ] }} => /pl/feed/
+
+.. code-block:: smarty
+
+    // Custom language and custom feed template
+    {{ generate_url route="newscoop_feed" parameters=['languageCode'=> 'pl', 'feedName'=> 'template' ] }} => /pl/feed/template/
