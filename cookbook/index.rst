@@ -14,6 +14,7 @@ Contents:
    custom_template_lists.rst
    custom_RSS_feeds.rst
    data_caching.rst
+   static_frontpage_theme.rst
 
 
 
