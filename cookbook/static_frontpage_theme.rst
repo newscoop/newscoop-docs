@@ -4,6 +4,7 @@ How to make sure the frontpage of a publication always uses the same theme.
 *Introduced as from Newscoop Version: 4.4.7*
 
 To render pages Newscoop (by default) uses the theme attached to the latest published issue. This behavior works great if you create a new issue per week or month and sometimes you want to use a different theme for special occasions like christmas, easter or elsehow.
+
 But if you don't use issues in the above described way, then it can create problems for a multi theme setup. For example if you use an issues with different themes to organise all articles of a respective region in your publication. In this case the theme being used for the frontpage of the publication would change whenever a new regional issue with a different theme is published.
 
 If in you always want to use the same theme for your frontpage, even if the latest published issue uses a new or different theme, you need to change the publication settings as described below.
