@@ -1,7 +1,7 @@
 Custom RSS feeds
 ----------------
 
-*Minimum Newscoop Version: 4.4.7*
+*Introduced as from Newscoop Version: 4.4.7*
 
 Newscoop provides two urls which can be used as RSS feed endpoints:
 
